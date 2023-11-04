@@ -1,0 +1,74 @@
+###########################################################
+#               SlashMessage by SkyGameZ                  #
+#     Cross-Network Messaging Has Never Been So Easy      #
+#                                                         #
+#                    Version: 1.0                         #
+#  -- Join https://discord.gg/jQKNTDKYmQ for support --   #
+###########################################################
+
+
+
+# Cooldown
+# Set a cooldown between messages to prevent spam (in seconds)
+enable-cooldown: true
+cooldown-time: 5
+
+# Formatting
+# Set the formatting of your messaging
+#
+# PLACEHOLDERS:
+# $SENDER$ - The message sender
+# $RECEIVER$ - The message target
+# $SENDER-SERVER$ - The current server the sender is on
+# $RECEIVER-SERVER$ - The current server the receiver is on
+# $MESSAGE$ - The message being sent
+# $TIMESTAMP$ - The time at which the message was sent
+
+# Example: [$TIMESTAMP$] You -> ($RECEIVER-SERVER$)$RECEIVER$: $MESSAGE$
+# Will return as: [9/24/23 - 3:17] You -> (Survival)SomePlayer19: This is a message!
+
+message-formats:
+  # Messaging formats
+  send: "<green>You <gray>-> <blue>$RECEIVER$<gray>: <white>$MESSAGE$"
+  receive: "<green>$SENDER$ <gray>-> <blue>You<gray>: <white>$MESSAGE$"
+
+  # Cannot message player formats
+  blocked-by-receiver: "<red>Sorry, $RECEIVER$ has disabled messages from you."
+  messages-disabled-by-receiver: "<red>$RECEIVER$ has disabled messaging."
+  receiver-offline: "<red>$RECEIVER$ is currently offline."
+
+  # server message block formats
+  message-ban: "<red>Your ability to send messages has been restricted."
+
+commands:
+  message:
+    # Permission: slashmessage.message
+    aliases:
+      - "msg"
+    permission-message: "<red>You do not have permission to run this command!"
+
+  slashmessage:
+    # Permission: slashmessage.admin
+    aliases:
+      - "messageadmin"
+    permission-message: "<red>You do not have permission to run this command!"
+
+  messagesettings:
+    # Permission: slashmessage.settings
+    aliases:
+      - "msgsettings"
+    permission-message: "<red>You do not have permission to run this command!"
+
+
+
+
+
+
+
+
+
+
+
+
+# DO NOT TOUCH
+Config-Version: 1.0

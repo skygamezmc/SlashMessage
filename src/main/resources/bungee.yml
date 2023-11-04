@@ -1,0 +1,5 @@
+name: SlashMessage
+version: '${project.version}'
+main: me.skygamez.slashmessage.SlashMessage
+description: Easily message your players
+author: SkyGameZ
