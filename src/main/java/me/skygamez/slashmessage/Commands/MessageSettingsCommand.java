@@ -55,14 +55,21 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
         Audience player = adventure.sender(sender);
 
         if (args.length == 0) {
-            player.sendMessage(Formatting.messageFormat("<red>Usage: /messagesettings <action> [player]"));
+            //player.sendMessage(Formatting.messageFormat("<red>Usage: /messagesettings <action> [player]"));
+            player.sendMessage(Formatting.messageFormat("<green><bold><underlined>Message Settings"));
+            player.sendMessage(Formatting.messageFormat("<reset>"));
+            player.sendMessage(Formatting.messageFormat("<light_blue><underlined>Possible Commands:"));
+            player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings toggle"));
+            player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings block [player]"));
+            player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings unblock [player]"));
+            player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings blocked-users"));
             return;
         }
 
         UUID playerUUID = ProxyServer.getInstance().getPlayer(sender.getName()).getUniqueId();
 
         // Block logic
-        if (args[0].equals("block")) {
+        if (args[0].equalsIgnoreCase("block")) {
             if (args.length == 1) {
                 player.sendMessage(Formatting.messageFormat("<red>Usage: /messagesettings block <player>"));
                 return;
@@ -100,7 +107,7 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
             return;
         }
 
-        if (args[0].equals("unblock")) {
+        if (args[0].equalsIgnoreCase("unblock")) {
             if (args.length == 1) {
                 player.sendMessage(Formatting.messageFormat("<red>Usage: /messagesettings unblock <player>"));
                 return;
@@ -137,7 +144,7 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
             return;
         }
 
-        if (args[0].equals("blocked-users")) {
+        if (args[0].equalsIgnoreCase("blocked-users")) {
             List<UUID> blockedUsersUUID;
             List<String> blockedUsers;
 
@@ -156,9 +163,10 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
 
             player.sendMessage(Formatting.messageFormat("<green>You have blocked <gray>" + blockedUsers.size() + "<green> user(s)."));
             player.sendMessage(Formatting.messageFormat("<green>Your blocked users: " + blockedUsers.stream().map(Object::toString).collect(Collectors.joining(", "))));
+            return;
         }
 
-        if (args[0].equals("toggle")) {
+        if (args[0].equalsIgnoreCase("toggle")) {
 
             if (slashMessage.messagingDisabledUsers.contains(playerUUID)) {
                 slashMessage.messagingDisabledUsers.remove(playerUUID);
@@ -168,11 +176,12 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
 
             slashMessage.messagingDisabledUsers.add(playerUUID);
             player.sendMessage(Formatting.messageFormat("<green>Messages disabled"));
-            return;
 
+            JSON.saveJsonData(JSON.arrayListToJson((ArrayList<?>) slashMessage.messagingDisabledUsers), slashMessage.playerDisabledDataFile);
+            return;
         }
 
-        if (args[0].equals("debug")) {
+        if (args[0].equalsIgnoreCase("debug")) {
             System.err.println("-----------DEBUG - SLASHMESSAGE-----------");
             System.err.println(" ");
             System.err.println("--JSON--");

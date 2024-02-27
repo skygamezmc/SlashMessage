@@ -2,6 +2,7 @@ package me.skygamez.slashmessage;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import me.skygamez.slashmessage.Commands.MessageAdminCommand;
 import me.skygamez.slashmessage.Commands.MessageCommand;
 import me.skygamez.slashmessage.Commands.MessageSettingsCommand;
 import me.skygamez.slashmessage.Events.PlayerJoinListener;
@@ -19,10 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import me.skygamez.slashmessage.Metrics.Metrics;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -31,6 +29,8 @@ public final class SlashMessage extends Plugin {
 
     public HashMap<UUID, Set<UUID>> userBlockedByUser = new HashMap<>();
     public List<UUID> messagingDisabledUsers = new ArrayList<>();
+
+    public List<UUID> messagingBannedUsers = new ArrayList<>();
 
 
     public Configuration config;
@@ -42,6 +42,8 @@ public final class SlashMessage extends Plugin {
     public File playerUUIDFile;
     public File playerBlockedDataFile;
     public File playerDisabledDataFile;
+
+    public File playerBannedDataFile;
 
     @NonNull
     public BungeeAudiences adventure() {
@@ -85,6 +87,10 @@ public final class SlashMessage extends Plugin {
         version = Integer.parseInt(split[1]);
 
         // Command Instancing logic
+
+        String[] adminAliases = config.getStringList("commands.messageadmin.aliases").toArray(new String[0]);
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new MessageAdminCommand(this, config, adventure, adminAliases));
+
         String[] msgAliases = config.getStringList("commands.message.aliases").toArray(new String[0]);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new MessageCommand(this, config, adventure, msgAliases));
 
@@ -95,19 +101,23 @@ public final class SlashMessage extends Plugin {
         // Event Instancing Logic
         ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerJoinListener(this));
 
+        //uuid file
         playerUUIDFile = new File(getDataFolder(), "player_uuids.json");
         if (!playerUUIDFile.exists()) {
             try {
                 playerUUIDFile.createNewFile();
+                new FileWriter(playerBlockedDataFile).write("[]");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+        //blocked file
         playerBlockedDataFile = new File(getDataFolder(), "player_blocked.json");
         if (!playerBlockedDataFile.exists()) {
             try {
                 playerBlockedDataFile.createNewFile();
+                new FileWriter(playerBlockedDataFile).write("[]");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -119,12 +129,42 @@ public final class SlashMessage extends Plugin {
             }
         }
 
+        //disabled file
         playerDisabledDataFile = new File(getDataFolder(), "player_disabled.json");
         if (!playerDisabledDataFile.exists()) {
             try {
                 playerDisabledDataFile.createNewFile();
+                new FileWriter(playerDisabledDataFile).write("[]");
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        } else {
+            try {
+                JSON.JSONArrayToArrayList(JSON.parseJsonFromFile(playerBannedDataFile), (ArrayList<UUID>) messagingDisabledUsers);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // !!!!!!!!!!!
+        // KNOWN ISSUE
+        // FILE DOES NOT GENERATE OR READ PROPERLY
+        // !!!!!!!!!!!
+
+        //banned file
+        playerBannedDataFile = new File(getDataFolder(), "player_banned.json");
+        if (!playerBannedDataFile.exists()) {
+            try {
+                playerBannedDataFile.createNewFile();
+                new FileWriter(playerBannedDataFile).write("[]");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                JSON.JSONArrayToArrayList(JSON.parseJsonFromFile(playerBannedDataFile), (ArrayList<UUID>) messagingBannedUsers);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 

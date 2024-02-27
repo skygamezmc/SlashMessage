@@ -8,10 +8,7 @@ import com.google.gson.JsonParser;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class JSON {
 
@@ -57,10 +54,10 @@ public class JSON {
         return JsonParser.parseString(gson.toJson(hashMap)).getAsJsonObject();
     }
 
-    public static JsonArray arrayListToJson(ArrayList<Object> arrayList) {
+    public static JsonObject arrayListToJson(ArrayList<?> arrayList) {
         Gson gson = new Gson();
 
-        return JsonParser.parseString(gson.toJson(arrayList)).getAsJsonArray();
+        return JsonParser.parseString(gson.toJson(arrayList)).getAsJsonObject();
     }
 
     public static void saveJsonData(JsonObject jsonObject, File jsonFile) {
@@ -79,6 +76,12 @@ public class JSON {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void JSONArrayToArrayList(JsonArray jsonArray, ArrayList<UUID> arrayList) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<UUID>>(){}.getType();
+        arrayList = gson.fromJson(jsonArray, type);
     }
 
     public static void blockJSONtoHashMap(File jsonFile, HashMap<UUID, Set<UUID>> hashMap) throws IOException {
