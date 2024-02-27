@@ -1,7 +1,7 @@
 package me.skygamez.slashmessage.Commands;
 
-import me.skygamez.slashmessage.Functions.Formatting;
-import me.skygamez.slashmessage.Functions.Permissions;
+import me.skygamez.slashmessage.utils.Formatting;
+import me.skygamez.slashmessage.utils.Permissions;
 import me.skygamez.slashmessage.SlashMessage;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
@@ -34,6 +34,7 @@ public class MessageCommand extends Command {
         mm = slashMessage.mm;
     }
 
+
     @Override
     public void execute(CommandSender sender, String[] args) {
 
@@ -52,14 +53,21 @@ public class MessageCommand extends Command {
             return;
         }
 
-        ProxiedPlayer targetReceiver = ProxyServer.getInstance().getPlayer(args[0]);
+        ProxiedPlayer targetReceiver = ProxyServer.getInstance().getPlayer(args[0].toLowerCase());
         ProxiedPlayer proxiedSender = ProxyServer.getInstance().getPlayer(sender.getName());
 
         Audience receiver = adventure.player(targetReceiver);
 
-        //
-        // if player is banned from messaging send banned from messaging message
-        //
+        if (slashMessage.messagingBannedUsers.contains(proxiedSender.getUniqueId())) {
+            player.sendMessage(Formatting.messageFormat(formatPlaceholders(
+                    sender.getName(),
+                    targetReceiver.getName(),
+                    proxiedSender.getServer().getInfo().getName(),
+                    targetReceiver.getServer().getInfo().getName(),
+                    "",
+                    config.getString("message-formats.message-ban"))));
+            return;
+        }
 
         if (!targetReceiver.isConnected()) {
             player.sendMessage(Formatting.messageFormat(config.getString("message-formats.receiver-offline")));

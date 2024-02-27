@@ -47,10 +47,10 @@ commands:
       - "msg"
     permission-message: "<red>You do not have permission to run this command!"
 
-  slashmessage:
+  messageadmin:
     # Permission: slashmessage.admin
     aliases:
-      - "messageadmin"
+      - "msgadmin"
     permission-message: "<red>You do not have permission to run this command!"
 
   messagesettings:

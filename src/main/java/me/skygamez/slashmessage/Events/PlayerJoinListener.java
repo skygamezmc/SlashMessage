@@ -1,14 +1,13 @@
 package me.skygamez.slashmessage.Events;
 
 import com.google.gson.*;
-import me.skygamez.slashmessage.Functions.JSON;
+import me.skygamez.slashmessage.utils.JSON;
 import me.skygamez.slashmessage.SlashMessage;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
