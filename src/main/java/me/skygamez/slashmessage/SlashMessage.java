@@ -6,6 +6,7 @@ import me.skygamez.slashmessage.Commands.MessageAdminCommand;
 import me.skygamez.slashmessage.Commands.MessageCommand;
 import me.skygamez.slashmessage.Commands.MessageSettingsCommand;
 import me.skygamez.slashmessage.Events.PlayerJoinListener;
+import me.skygamez.slashmessage.api.API;
 import me.skygamez.slashmessage.utils.JSON;
 import me.skygamez.slashmessage.utils.UpdateChecker;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,6 +26,8 @@ import java.nio.file.Files;
 import java.util.*;
 
 public final class SlashMessage extends Plugin {
+
+    public API api;
 
 
     public HashMap<UUID, Set<UUID>> userBlockedByUser = new HashMap<>();
@@ -68,7 +71,7 @@ public final class SlashMessage extends Plugin {
         }
 
         // Check if config version is stable
-        if (config.getFloat("Config-Version") != 1.0) {
+        if (config.getFloat("Config-Version") != 1.0f) {
             getLogger().info("§4------------------------------------");
             getLogger().info("");
             getLogger().info("§7          * §eWARNING!§7*");
@@ -82,9 +85,6 @@ public final class SlashMessage extends Plugin {
 
         int pluginId = 19884;
         Metrics metrics = new Metrics(this, pluginId);
-
-        String[] split = getProxy().getVersion().split(":")[2].split("-")[0].split("\\.");
-        version = Integer.parseInt(split[1]);
 
         // Command Instancing logic
 
@@ -106,7 +106,9 @@ public final class SlashMessage extends Plugin {
         if (!playerUUIDFile.exists()) {
             try {
                 playerUUIDFile.createNewFile();
-                new FileWriter(playerBlockedDataFile).write("[]");
+                FileWriter writer = new FileWriter(playerBlockedDataFile);
+                writer.write("[]");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,7 +119,9 @@ public final class SlashMessage extends Plugin {
         if (!playerBlockedDataFile.exists()) {
             try {
                 playerBlockedDataFile.createNewFile();
-                new FileWriter(playerBlockedDataFile).write("[]");
+                FileWriter writer = new FileWriter(playerBlockedDataFile);
+                writer.write("[]");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -134,29 +138,26 @@ public final class SlashMessage extends Plugin {
         if (!playerDisabledDataFile.exists()) {
             try {
                 playerDisabledDataFile.createNewFile();
-                new FileWriter(playerDisabledDataFile).write("[]");
+                FileWriter writer = new FileWriter(playerDisabledDataFile);
+                writer.write("[]");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                JSON.JSONArrayToArrayList(JSON.parseJsonFromFile(playerBannedDataFile), (ArrayList<UUID>) messagingDisabledUsers);
+                JSON.JSONArrayToArrayList(JSON.parseJsonFromFile(playerDisabledDataFile), (ArrayList<UUID>) messagingDisabledUsers);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        // !!!!!!!!!!!
-        // KNOWN ISSUE
-        // FILE DOES NOT GENERATE OR READ PROPERLY
-        // !!!!!!!!!!!
-
-        //banned file
         playerBannedDataFile = new File(getDataFolder(), "player_banned.json");
         if (!playerBannedDataFile.exists()) {
             try {
                 playerBannedDataFile.createNewFile();
-                new FileWriter(playerBannedDataFile).write("[]");
+                FileWriter writer = new FileWriter(playerBannedDataFile);
+                writer.write("[]");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,8 +169,10 @@ public final class SlashMessage extends Plugin {
             }
         }
 
+        api = new API(this);
+
         try {
-            UpdateChecker updateChecker = new UpdateChecker(this, 363);
+            UpdateChecker updateChecker = new UpdateChecker(this, 116353);
             if (updateChecker.isUpdateRequired()) {
                 getLogger().info("§b--------------------------------");
                 getLogger().info("");

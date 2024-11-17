@@ -13,6 +13,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.config.Configuration;
 
+import javax.annotation.processing.Completion;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
             //player.sendMessage(Formatting.messageFormat("<red>Usage: /messagesettings <action> [player]"));
             player.sendMessage(Formatting.messageFormat("<green><bold><underlined>Message Settings"));
             player.sendMessage(Formatting.messageFormat("<reset>"));
-            player.sendMessage(Formatting.messageFormat("<light_blue><underlined>Possible Commands:"));
+            player.sendMessage(Formatting.messageFormat("<aqua><underlined>Commands:"));
             player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings toggle"));
             player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings block [player]"));
             player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings unblock [player]"));
@@ -177,31 +178,17 @@ public class MessageSettingsCommand extends Command implements TabExecutor {
             slashMessage.messagingDisabledUsers.add(playerUUID);
             player.sendMessage(Formatting.messageFormat("<green>Messages disabled"));
 
-            JSON.saveJsonData(JSON.arrayListToJson((ArrayList<?>) slashMessage.messagingDisabledUsers), slashMessage.playerDisabledDataFile);
+            JSON.saveJsonArrayData(JSON.arrayListToJson((ArrayList<?>) slashMessage.messagingDisabledUsers), slashMessage.playerDisabledDataFile);
             return;
         }
 
-        if (args[0].equalsIgnoreCase("debug")) {
-            System.err.println("-----------DEBUG - SLASHMESSAGE-----------");
-            System.err.println(" ");
-            System.err.println("--JSON--");
-            System.err.println(" ");
-            try {
-                System.err.println("UUID FILE: " + JSON.parseJsonFromFile(slashMessage.playerUUIDFile));
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            };
-            System.err.println(" ");
-            System.err.println("--LIST--");
-            System.err.println(" ");
-            System.err.println("USERS WHOM DISABLED MESSAGES: " + slashMessage.messagingDisabledUsers);
-            System.err.println("BLOCKED USERS: ");
-            for (UUID blockedUser : slashMessage.userBlockedByUser.keySet()) {
-                System.err.println("User: " + blockedUser + " Blocked users: " + slashMessage.userBlockedByUser.get(blockedUser));
-            }
-            System.err.println(" ");
-            System.err.println("------------------DEBUG END----------------");
-        }
+        player.sendMessage(Formatting.messageFormat("<green><bold><underlined>Message Settings"));
+        player.sendMessage(Formatting.messageFormat("<reset>"));
+        player.sendMessage(Formatting.messageFormat("<aqua><underlined>Commands:"));
+        player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings toggle"));
+        player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings block [player]"));
+        player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings unblock [player]"));
+        player.sendMessage(Formatting.messageFormat("<gray>» <light_purple>/messagesettings blocked-users"));
 
     }
 }

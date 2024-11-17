@@ -1,10 +1,7 @@
 package me.skygamez.slashmessage.utils;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -12,13 +9,24 @@ import java.util.*;
 
 public class JSON {
 
-    public static JsonArray parseJsonFromFile(File file) throws IOException, FileNotFoundException {
+    public static JsonArray parseJsonFromFile(File file) throws IOException {
         Gson gson = new Gson();
         FileReader fileReader = new FileReader(file);
 
-        // Parse the JSON file into a JsonArray
-        JsonArray jsonArray = JsonParser.parseReader(fileReader).getAsJsonArray();
-        fileReader.close();
+        // Initialize an empty JsonArray
+        JsonArray jsonArray = new JsonArray();
+
+        try {
+            // Parse the JSON file content
+            JsonElement parsedElement = JsonParser.parseReader(fileReader);
+
+            // If the parsed element is an array, get it as a JsonArray
+            if (parsedElement.isJsonArray()) {
+                jsonArray = parsedElement.getAsJsonArray();
+            }
+        } finally {
+            fileReader.close();
+        }
 
         return jsonArray;
     }
@@ -54,10 +62,10 @@ public class JSON {
         return JsonParser.parseString(gson.toJson(hashMap)).getAsJsonObject();
     }
 
-    public static JsonObject arrayListToJson(ArrayList<?> arrayList) {
+    public static JsonArray arrayListToJson(ArrayList<?> arrayList) {
         Gson gson = new Gson();
 
-        return JsonParser.parseString(gson.toJson(arrayList)).getAsJsonObject();
+        return JsonParser.parseString(gson.toJson(arrayList)).getAsJsonArray();
     }
 
     public static void saveJsonData(JsonObject jsonObject, File jsonFile) {
@@ -81,7 +89,11 @@ public class JSON {
     public static void JSONArrayToArrayList(JsonArray jsonArray, ArrayList<UUID> arrayList) {
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<UUID>>(){}.getType();
-        arrayList = gson.fromJson(jsonArray, type);
+        ArrayList<UUID> newList = gson.fromJson(jsonArray, type);
+        arrayList.clear();
+        if (!newList.isEmpty()) {
+            arrayList.addAll(newList);
+        }
     }
 
     public static void blockJSONtoHashMap(File jsonFile, HashMap<UUID, Set<UUID>> hashMap) throws IOException {
